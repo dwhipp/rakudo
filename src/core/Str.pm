@@ -82,13 +82,4 @@ augment class Str does Stringy {
         $result = -$result if $negate;
         $result;
     }
-
-    our sub str2num-num($negate, $int-part, $frac-part, $exp-part-negate, $exp-part) is export {
-        my $exp = str2num-int($exp-part);
-        $exp = -$exp if $exp-part-negate;
-        my $result = (str2num-int($int-part) + str2num-int($frac-part) / str2num-base($frac-part))
-                     * 10 ** $exp;
-        $result = -$result if $negate;
-        $result;
-    }
 }

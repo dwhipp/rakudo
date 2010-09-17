@@ -51,6 +51,31 @@
     .return ($P0)
 .end
 
+.sub '&str2num-num'
+    .param int negate
+    .param string int_part
+    .param string frac_part
+    .param int exp_part_negate
+    .param string exp_part
+
+    .local num ex, result
+    ex = '&str2num-int'(exp_part)
+    unless exp_part_negate goto ex_negate_done
+    ex = -ex
+  ex_negate_done:
+    result  = '&str2num-int'(frac_part)
+    $I0     = '&str2num-base'(frac_part)
+    result /= $I0
+    $I0     = '&str2num-int'(int_part)
+    result += $I0
+    $N0     = pow 10.0, ex
+    result *= $N0
+    unless negate goto res_neg_done
+    result  = -result
+  res_neg_done:
+    $P0 = box result
+    .return ($P0)
+.end
 
 
 # Local Variables:
