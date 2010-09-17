@@ -88,6 +88,7 @@ BUILTINS_PIR = \
   src/glue/role.pir \
   src/glue/run.pir \
   src/glue/types.pir \
+  src/glue/num-conversion.pir \
   src/builtins/Mu.pir \
   src/metamodel/ClassHOW.pir \
   src/builtins/Any.pir \
