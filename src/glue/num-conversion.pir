@@ -28,6 +28,30 @@
     .return($P0)
 .end
 
+.sub '&str2num-base'
+    .param string src_s
+    .local int pos, eos
+    .local num result
+    pos = 0
+    eos = length src_s
+    result = 1
+  str_loop:
+    unless pos < eos goto str_done
+    .local string char
+    char = substr src_s, pos, 1
+    if char == '_' goto str_next
+    result *= 10
+  str_next:
+    inc pos
+    goto str_loop
+  err_base:
+    die 'invalid radix conversion'
+  str_done:
+    $P0 = box result
+    .return ($P0)
+.end
+
+
 
 # Local Variables:
 #   mode: pir
