@@ -51,7 +51,7 @@
     .return ($P0)
 .end
 
-.sub '&str2num-num'
+.sub 'str2num-num'
     .param int negate
     .param string int_part
     .param string frac_part

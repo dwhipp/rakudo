@@ -2613,10 +2613,9 @@ method dec_number($/) {
     my $frac := $<frac> ?? ~$<frac> !! "0";
     if $<escale> {
         my $exp := ~$<escale>[0]<decint>;
-        make PAST::Op.new(
-            :pasttype('call'),
-            PAST::Var.new(:scope('package'), :name('&str2num-num'), :namespace('Str')),
-             0, $int, $frac, ($<escale>[0]<sign> eq '-'), $exp
+        make PAST::Val.new(
+            :value(Str::str2num-num(0, $int, $frac, ($<escale>[0]<sign> eq '-'), $exp)),
+            :returns('Num')
         );
     } else {
         make PAST::Op.new(
