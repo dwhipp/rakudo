@@ -30,7 +30,6 @@ static STRING *ARRAY_str        = NULL;
 static STRING *BLOCK_str        = NULL;
 static STRING *STORE_str        = NULL;
 static STRING *CREATE_str       = NULL;
-static STRING *SCALAR_str       = NULL;
 static STRING *SELECT_str       = NULL;
 static STRING *CAPTURE_str      = NULL;
 static STRING *SNAPCAP_str      = NULL;
@@ -63,7 +62,6 @@ static void setup_binder_statics(PARROT_INTERP) {
     BLOCK_str        = Parrot_str_new_constant(interp, "Block");
     STORE_str        = Parrot_str_new_constant(interp, "!STORE");
     CREATE_str       = Parrot_str_new_constant(interp, "CREATE");
-    SCALAR_str       = Parrot_str_new_constant(interp, "scalar");
     SELECT_str       = Parrot_str_new_constant(interp, "!select");
     CAPTURE_str      = Parrot_str_new_constant(interp, "Capture");
     SNAPCAP_str      = Parrot_str_new_constant(interp, "!snapshot_capture");
@@ -372,19 +370,22 @@ Rakudo_binding_bind_one_param(PARROT_INTERP, PMC *lexpad, llsig_element *sig_inf
                 if (sig_info->flags & SIG_ELEM_ARRAY_SIGIL) {
                     copy          = Rakudo_binding_create_positional(interp, PMCNULL, ARRAY_str);
                     store_meth    = VTABLE_find_method(interp, copy, STORE_str);
-                    Parrot_ext_call(interp, store_meth, "PiP", copy, value);
+                    Parrot_ext_call(interp, store_meth, "PiP", copy, value);                    
+                    VTABLE_setprop(interp, copy, RW_str, Parrot_ns_find_namespace_global(interp,
+                        Parrot_get_ctx_HLL_namespace(interp), Parrot_str_new(interp, "True", 0)));
                 }
                 else if (sig_info->flags & SIG_ELEM_HASH_SIGIL) {
                     copy          = Rakudo_binding_create_hash(interp, pmc_new(interp, enum_class_Hash));
                     store_meth    = VTABLE_find_method(interp, copy, STORE_str);
                     Parrot_ext_call(interp, store_meth, "PiP", copy, value);
+                    VTABLE_setprop(interp, copy, RW_str, Parrot_ns_find_namespace_global(interp,
+                        Parrot_get_ctx_HLL_namespace(interp), Parrot_str_new(interp, "True", 0)));
                 }
                 else {
                     copy = pmc_new_init(interp, p6s_id, value);
-                    VTABLE_setprop(interp, copy, SCALAR_str, copy);
+                    PObj_flag_SET(P6_IS_SCALAR, copy);
+                    PObj_flag_SET(P6_IS_RW, copy);
                 }
-                VTABLE_setprop(interp, copy, RW_str, Parrot_ns_find_namespace_global(interp,
-                    Parrot_get_ctx_HLL_namespace(interp), Parrot_str_new(interp, "True", 0)));
                 VTABLE_set_pmc_keyed_str(interp, lexpad, sig_info->variable_name, copy);
             }
         }
@@ -393,7 +394,7 @@ Rakudo_binding_bind_one_param(PARROT_INTERP, PMC *lexpad, llsig_element *sig_inf
             if (!STRING_IS_NULL(sig_info->variable_name)) {
                 PMC *ref  = pmc_new_init(interp, or_id, value);
                 if (!(sig_info->flags & (SIG_ELEM_ARRAY_SIGIL | SIG_ELEM_HASH_SIGIL)))
-                    VTABLE_setprop(interp, ref, SCALAR_str, ref);
+                    PObj_flag_SET(P6_IS_SCALAR, ref);
                 VTABLE_set_pmc_keyed_str(interp, lexpad, sig_info->variable_name, ref);
             }
         }

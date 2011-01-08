@@ -40,11 +40,12 @@ static bind_llsig_func_type bind_llsig_func = NULL;
 /* A place to cache Bool::True, and a helper to get it (can't do this in
  * the dynop setup, as that's too early). */
 static PMC *bool_true = NULL;
-static void ensure_we_have_bool_true(PARROT_INTERP) {
+static PMC *get_bool_true(PARROT_INTERP) {
     if (!bool_true)
         bool_true = Parrot_ns_find_namespace_global(interp,
             Parrot_get_ctx_HLL_namespace(interp),
             Parrot_str_new(interp, "True", 0));
+    return bool_true;
 }
 
 END_OPS_PREAMBLE
@@ -766,8 +767,10 @@ use the Parrot prop hash.
 */
 
 inline op set_is_scalar(in PMC) :base_core {
-    ensure_we_have_bool_true(interp);
-    VTABLE_setprop(interp, $1, SCALAR_str, bool_true);
+    if ($1->vtable->base_type == p6s_id || $1->vtable->base_type == or_id)
+        PObj_flag_SET(P6_IS_SCALAR, $1);
+    else
+        VTABLE_setprop(interp, $1, SCALAR_str, get_bool_true(interp));
     goto NEXT();
 }
 
@@ -784,8 +787,10 @@ or not.
 */
 
 inline op check_is_scalar(out INT, in PMC) :base_core {
-    ensure_we_have_bool_true(interp);
-    $1 = VTABLE_getprop(interp, $2, SCALAR_str) == bool_true;
+    if ($2->vtable->base_type == p6s_id || $2->vtable->base_type == or_id)
+        $1 = PObj_flag_TEST(P6_IS_SCALAR, $2);
+    else
+        $1 = VTABLE_getprop(interp, $2, SCALAR_str) == get_bool_true(interp);
     goto NEXT();
 }
 
@@ -803,8 +808,10 @@ use the Parrot prop hash.
 */
 
 inline op set_is_rw(in PMC) :base_core {
-    ensure_we_have_bool_true(interp);
-    VTABLE_setprop(interp, $1, RW_str, bool_true);
+    if ($1->vtable->base_type == p6s_id || $1->vtable->base_type == or_id)
+        PObj_flag_SET(P6_IS_RW, $1);
+    else
+        VTABLE_setprop(interp, $1, RW_str, get_bool_true(interp));
     goto NEXT();
 }
 
@@ -821,8 +828,10 @@ or not.
 */
 
 inline op check_is_rw(out INT, in PMC) :base_core {
-    ensure_we_have_bool_true(interp);
-    $1 = VTABLE_getprop(interp, $2, RW_str) == bool_true;
+    if ($2->vtable->base_type == p6s_id || $2->vtable->base_type == or_id)
+        $1 = PObj_flag_TEST(P6_IS_RW, $2);
+    else
+        $1 = VTABLE_getprop(interp, $2, RW_str) == get_bool_true(interp);
     goto NEXT();
 }
 

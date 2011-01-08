@@ -105,6 +105,13 @@ pmclass ObjectRef dynpmc group perl6_group auto_attrs {
         PMC * copy;
         GET_ATTR_value(INTERP, SELF, value);
         copy = pmc_new_init(INTERP, SELF->vtable->base_type, value);
+
+        /* Copy PMC private flags (used for rw/scalar flags). */
+        if (PObj_flag_TEST(private0, SELF))
+            PObj_flag_SET(private0, copy);
+        if (PObj_flag_TEST(private1, SELF))
+            PObj_flag_SET(private1, copy);
+
         return copy;
     }
 

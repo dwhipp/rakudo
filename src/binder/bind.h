@@ -52,6 +52,11 @@ typedef struct llsig_element {
 #define PObj_P6S_ALREADY_BOUND_FLAG     PObj_private1_FLAG
 
 
+/* Flags for setting rw-ness and scalar-ness. */
+#define PObj_P6_IS_SCALAR_FLAG   PObj_private0_FLAG
+#define PObj_P6_IS_RW_FLAG       PObj_private1_FLAG
+
+
 /* A function we want to share to provide the interface to the binder. */
 INTVAL
 Rakudo_binding_bind_llsig(PARROT_INTERP, PMC *lexpad, PMC *llsig,
