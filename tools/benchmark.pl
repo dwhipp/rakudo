@@ -66,6 +66,12 @@ my %benchmarks = (
 "07 - postfix:<++> 10,000 times" => q{
     my $i = 0;
     while $i < 10000 { $i++ }
+},
+
+# This is just a 1..5000 loop since we do that in many other cases.
+"08 - for 1..5000 { }" => q{
+    for 1..5000 {
+    }
 }
 );
 
