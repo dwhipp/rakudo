@@ -28,12 +28,24 @@ static INTVAL p6o_id = 0;
 static STRING *LLSIG_ATTR_str;
 static STRING *BANG_LLSIG_str;
 static STRING *DISPATCH_JUNCTION_str;
+static STRING *SCALAR_str;
+static STRING *RW_str;
 
 /* Plus a function pointer to the binder. */
 typedef INTVAL (*bind_llsig_func_type) (PARROT_INTERP, PMC *lexpad,
     PMC *llsig, PMC *capture, INTVAL no_nom_type_check, STRING **error);
 
 static bind_llsig_func_type bind_llsig_func = NULL;
+
+/* A place to cache Bool::True, and a helper to get it (can't do this in
+ * the dynop setup, as that's too early). */
+static PMC *bool_true = NULL;
+static void ensure_we_have_bool_true(PARROT_INTERP) {
+    if (!bool_true)
+        bool_true = Parrot_ns_find_namespace_global(interp,
+            Parrot_get_ctx_HLL_namespace(interp),
+            Parrot_str_new(interp, "True", 0));
+}
 
 END_OPS_PREAMBLE
 
@@ -58,6 +70,8 @@ inline op rakudo_dynop_setup() :base_core {
     LLSIG_ATTR_str        = Parrot_str_new_constant(interp, "$!llsig");
     DISPATCH_JUNCTION_str = Parrot_str_new_constant(interp,
                                 "!DISPATCH_JUNCTION_SINGLE");
+    SCALAR_str            = Parrot_str_new_constant(interp, "scalar");
+    RW_str                = Parrot_str_new_constant(interp, "rw");
 
     /* Create dummy low level sig op and use its get_pointer to get a pointer
      * to the signature binder. */
@@ -736,6 +750,80 @@ inline op fixup_outer_ctx(inout PMC) :base_core {
                 EXCEPTION_INVALID_OPERATION, "fixup_outer_ctx only valid on a context");
         goto ADDRESS(handler);
     }
+}
+
+
+/*
+
+=item set_is_scalar
+
+This op abstracts away marking that something is to be considered a scalar.
+In some cases we have an efficient way to do that; in other cases, we just
+use the Parrot prop hash.
+
+=cut
+
+*/
+
+inline op set_is_scalar(in PMC) :base_core {
+    ensure_we_have_bool_true(interp);
+    VTABLE_setprop(interp, $1, SCALAR_str, bool_true);
+    goto NEXT();
+}
+
+
+/*
+
+=item check_is_scalar
+
+This op abstracts away checking if something should be considered a scalar
+or not.
+
+=cut
+
+*/
+
+inline op check_is_scalar(out INT, in PMC) :base_core {
+    ensure_we_have_bool_true(interp);
+    $1 = VTABLE_getprop(interp, $2, SCALAR_str) == bool_true;
+    goto NEXT();
+}
+
+
+/*
+
+=item set_is_rw
+
+This op abstracts away marking that something is to be considered as rw.
+In some cases we have an efficient way to do that; in other cases, we just
+use the Parrot prop hash.
+
+=cut
+
+*/
+
+inline op set_is_rw(in PMC) :base_core {
+    ensure_we_have_bool_true(interp);
+    VTABLE_setprop(interp, $1, RW_str, bool_true);
+    goto NEXT();
+}
+
+
+/*
+
+=item check_is_rw
+
+This op abstracts away checking if something should be considered as rw
+or not.
+
+=cut
+
+*/
+
+inline op check_is_rw(out INT, in PMC) :base_core {
+    ensure_we_have_bool_true(interp);
+    $1 = VTABLE_getprop(interp, $2, RW_str) == bool_true;
+    goto NEXT();
 }
 
 
