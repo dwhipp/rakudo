@@ -370,7 +370,7 @@ Completes the creation of the metaclass and return a proto-object.
     proto = self.'register'(parrotclass, 'how'=>self)
   proto_made:
     transform_to_p6opaque proto
-    setprop proto, 'scalar', proto
+    set_is_scalar proto
     .return (proto)
 .end
 
@@ -606,7 +606,7 @@ Gets a list of methods.
   private_done:
     cur_meth = method_hash[$S0]
     cur_meth = new ['ObjectRef'], cur_meth
-    setprop cur_meth, 'scalar', cur_meth
+    set_is_scalar cur_meth
     result_list.'push'(cur_meth)
     goto it_loop
   it_loop_end:
@@ -635,7 +635,7 @@ Gets a list of methods.
     parent_methods = cur_parent_meta.'methods'(cur_parent, adverbs :flat :named)
     if null tree goto not_tree
     unless tree goto not_tree
-    setprop parent_methods, 'scalar', parent_methods
+    set_is_scalar parent_methods
   not_tree:
     result_list.'push'(parent_methods)
     goto parent_it_loop
@@ -821,7 +821,7 @@ correct protocol.
   role_done:
 
     $P0 = self.'register'(parrotclass, 'how'=>how, options :named :flat)
-    setprop $P0, 'scalar', $P0
+    set_is_scalar $P0
     .return ($P0)
 .end
 

@@ -1105,7 +1105,7 @@ sub declare_variable($/, $past, $sigil, $twigil, $desigilname, $trait_list) {
 
         # If it's a scalar, mark it as scalar (non-flattening)
         if $sigil eq '$' || $sigil eq '&' {
-            $vivipast := PAST::Op.new($vivipast,'scalar',$true,:pirop('setprop'));
+            $vivipast := PAST::Op.new($vivipast, :pirop('set_is_scalar 0P'));
         }
 
         # For 'our' variables, we first bind or lookup in the namespace

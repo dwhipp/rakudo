@@ -203,8 +203,8 @@ This file implements Perl 6 lists.
     if $I0 goto value_iterator
     if null flat goto value_item
     unless flat goto value_item
-    $P0 = getprop 'scalar', value
-    unless null $P0 goto value_item
+    $I0 = check_is_scalar value
+    if $I0 goto value_item
     $I0 = isa value, ['ResizablePMCArray']
     if $I0 goto value_rpa
     $I0 = isa value, ['Iterable']

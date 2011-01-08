@@ -42,7 +42,7 @@ our sub eval(Str $code, :$lang = 'perl6') {
         $P0 = interp['lexpad';1]
         $P1 = $P0['$!']
         $P2 = new ['Perl6Scalar'], exception
-        setprop $P2, 'scalar', $P2
+        set_is_scalar $P2
         set_is_rw $P2
         copy $P1, $P2
         unless null result goto have_result

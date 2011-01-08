@@ -260,7 +260,7 @@ XXX This had probably best really just tailcall .^CREATE; move this stuff later.
     if $S0 == '%' goto attrinit_hash
     .local pmc attr
     attr = new ['Perl6Scalar']
-    setprop attr, 'scalar', attr
+    set_is_scalar attr
     goto attrinit_rw
   attrinit_array:
     attr = new ['Array']

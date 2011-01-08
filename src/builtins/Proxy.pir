@@ -55,7 +55,7 @@ container.
     $P0 = new ['Perl6Scalar']
     copy self, $P0
     $P0 = get_hll_global ['Bool'], 'True'
-    setprop self, 'scalar', $P0
+    set_is_scalar self
     .return (self)
 .end
 

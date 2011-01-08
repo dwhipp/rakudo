@@ -21,7 +21,7 @@ elements and can be flattened into Captures or Lists.
 
     nilproto = p6meta.'new_class'('Nil', 'parent'=>parcelproto)
     null $P0
-    setprop nilproto, 'scalar', $P0
+    set_is_scalar nilproto
 .end
 
 
@@ -233,9 +233,8 @@ Handle assignment to a Parcel (list assignment).
     unless seq goto cont_nil
     $I0 = isa cont, ['Whatever']
     if $I0 goto cont_scalar
-    $P0 = getprop 'scalar', cont
-    if null $P0 goto cont_array
-    unless $P0 goto cont_array
+    $I0 = check_is_scalar cont
+    unless $I0 goto cont_array
   cont_scalar:
     $P0 = seq.'shift'()
     push tv, cont
