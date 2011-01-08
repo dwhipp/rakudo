@@ -15,9 +15,9 @@ src/builtins/assign.pir - assignment operations
 
   cont_loop:
     # If the lhs isn't marked rw, throw exception
-    .local pmc rw
-    rw = getprop 'rw', cont
-    unless null rw goto rw_ok
+    .local int rw
+    rw = check_is_rw cont
+    if rw goto rw_ok
     '&die'('Cannot modify readonly value')
   rw_ok:
 

@@ -383,7 +383,8 @@ Rakudo_binding_bind_one_param(PARROT_INTERP, PMC *lexpad, llsig_element *sig_inf
                     copy = pmc_new_init(interp, p6s_id, value);
                     VTABLE_setprop(interp, copy, SCALAR_str, copy);
                 }
-                VTABLE_setprop(interp, copy, RW_str, copy);
+                VTABLE_setprop(interp, copy, RW_str, Parrot_ns_find_namespace_global(interp,
+                    Parrot_get_ctx_HLL_namespace(interp), Parrot_str_new(interp, "True", 0)));
                 VTABLE_set_pmc_keyed_str(interp, lexpad, sig_info->variable_name, copy);
             }
         }

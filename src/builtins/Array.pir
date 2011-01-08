@@ -101,7 +101,7 @@ Create an element for the Array (has the 'rw' property set).
     item = descalarref item
     elem = new ['Perl6Scalar'], item
     setprop elem, 'scalar', true
-    setprop elem, 'rw', true
+    set_is_rw elem
     .return (elem)
 .end
 

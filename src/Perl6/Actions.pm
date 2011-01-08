@@ -1100,7 +1100,7 @@ sub declare_variable($/, $past, $sigil, $twigil, $desigilname, $trait_list) {
         }
         my $true := PAST::Var.new( :name('true'), :scope('register') );
         my $vivipast := $readtype ne 'readonly' ??
-            PAST::Op.new( $cont, 'rw', $true, :pirop('setprop')) !!
+            PAST::Op.new( $cont, :pirop('set_is_rw 0P')) !!
             $cont;
 
         # If it's a scalar, mark it as scalar (non-flattening)
@@ -3325,7 +3325,7 @@ sub add_implicit_var($block, $name, $outer) {
                        PAST::Op.new(:pirop('find_lex_skip_current Ps'), $name)
                    )
                 !! PAST::Op.new( :inline("    %r = new ['Perl6Scalar']") );
-    $base := PAST::Op.new( $base, 'rw', $TRUE, :pirop('setprop') );
+    $base := PAST::Op.new( $base, :pirop('set_is_rw 0P') );
     $block[0].push(
         PAST::Var.new( :name($name), :scope('lexical'), :isdecl(1),
                        :viviself($base) )

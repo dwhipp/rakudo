@@ -25,8 +25,6 @@ of the compilation unit.
     .param pmc args
 
     .local string info
-    .local pmc true
-    true = get_hll_global 'True'
 
     info = interpinfo .INTERPINFO_EXECUTABLE_FULLNAME
     $P0 = new ['Str']
@@ -47,7 +45,7 @@ of the compilation unit.
     $P2 = new ['Array']
     $P2.'!STORE'(args)
     set_hll_global '@ARGS', $P2
-    setprop $P2, "rw", true
+    set_is_rw $P2
 
     ##  set up $*ARGFILES
     $P3 = get_hll_global ['IO'], 'ArgFiles'

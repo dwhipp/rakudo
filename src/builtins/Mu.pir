@@ -269,7 +269,7 @@ XXX This had probably best really just tailcall .^CREATE; move this stuff later.
   attrinit_hash:
     attr = '&CREATE_HASH_FROM_LOW_LEVEL'()
   attrinit_rw:
-    setprop attr, 'rw', attr
+    set_is_rw attr
     setattribute example, cur_class, attrname, attr
     goto attrinit_loop
   attrinit_done:
